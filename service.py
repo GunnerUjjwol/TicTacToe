@@ -1,13 +1,9 @@
-from enum import Enum
+
 from tkinter import Grid
 import numpy as np
 import random
+from Model.Game import GridValue, State
 
-#class for enum to identify unfilled value, cross and naught values
-class GridValue(Enum):
-    Unfilled = '-'
-    Cross = 'X'
-    Naught = 'O'
 
 nRows = 3
 nCols = 3
@@ -167,10 +163,13 @@ def isBoardFilled(gameData):
 
 
 def validateMove(newGameData, oldGameData, player):
-    newOneDGameData = newGameData.flatten()
-    newState = ({(i,s) for i,s in enumerate(newOneDGameData) if s in 'XO'})
-    oldOneDGameData = oldGameData.flatten()
-    oldState = ({(i,s) for i,s in enumerate(oldOneDGameData) if s in 'XO'})
+    if(len(newGameData)!=9):
+        print("Invalid Board Data")
+        return False
+    # newOneDGameData = newGameData.flatten()
+    newState = ({(i,s) for i,s in enumerate(newGameData) if s in 'XO'})
+    # oldOneDGameData = oldGameData.flatten()
+    oldState = ({(i,s) for i,s in enumerate(oldGameData) if s in 'XO'})
     print("oldState", oldState)
     print("newState", newState)
     if(oldState <= newState):
