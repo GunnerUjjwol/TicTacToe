@@ -17,7 +17,9 @@ class Game:
     def __init__(self):
         self.board = "---------"
         self.status = State.RUNNING.value
-        self.game_id = uuid1() #
+        self.game_id = str(uuid1()) #
+        self.player = 'X'
+        self.computer = 'O'
     
     def get_board(self):
         return self.board
@@ -35,4 +37,34 @@ class Game:
 
     def get_game_id(self):
         return self.game_id
+
+    def set_game_id(self, game_id):
+        self.game_id = game_id
+
+    def get_player(self):
+        return self.player
     
+    def set_player(self, player):
+        self.player = player
+
+    def get_computer(self):
+        return self.computer
+    
+    def set_computer(self, computer):
+        self.computer = computer
+    
+    def toJSON(self):
+        return {
+            "game_id": self.game_id,
+            "status": self.status,
+            "board": self.board
+        }
+    
+    def toObject(self, gameJSON):
+        game= Game()
+        game.set_game_id = gameJSON['game_id']
+        game.set_board= gameJSON['board']
+        game.set_status= gameJSON['status']
+        game.set_player= gameJSON['player']
+        game.set_computer= gameJSON['computer']
+        return game

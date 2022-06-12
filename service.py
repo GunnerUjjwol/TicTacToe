@@ -1,5 +1,4 @@
 
-from tkinter import Grid
 import numpy as np
 import random
 from Model.Game import GridValue, State
@@ -21,16 +20,6 @@ def togglePlayer(player):
 #This is called upon post request to start the game
 #TODO: might need to change datatype switch between oneD or 2D data
 def initializeGameData(gameData):
-    #TODO: check if the first move is valid
-
-    
-    # if np.all(gameData == GridValue.Unfilled.value):
-    #     print("Game started with no initial move: ---------")
-    #     print("Computer will make the first move")
-    #     #TODO: select player
-    #     player = 'X'
-    #     makeMove(gameData,player)
-
     global player
     global computer
     
