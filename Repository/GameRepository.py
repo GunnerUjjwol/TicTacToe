@@ -6,17 +6,23 @@ class GameRepository:
             {
                 "game_id": "1",
                 "board": "X--------",
-                "status": "RUNNING"
+                "status": "RUNNING",
+                "player": "O",
+                "computer": "X"
             },
             {
                 "game_id": "2",
                 "board": "O--O---XX",
-                "status": "RUNNING"
+                "status": "RUNNING",
+                "player": "O",
+                "computer": "X"
             },
             {
                 "game_id": "3",
                 "board": "X-----O--",
-                "status": "RUNNING"
+                "status": "RUNNING",
+                "player": "X",
+                "computer": "O"
             }
         ]
     

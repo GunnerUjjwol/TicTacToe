@@ -7,16 +7,11 @@ class GridValue(Enum):
     Cross = 'X'
     Naught = 'O'
 
-class State(Enum):
-    RUNNING = "RUNNING"
-    X_WON = "X_WON"
-    O_WON = "O_WON"
-    DRAW = "DRAW"
 
 class Game:
     def __init__(self):
         self.board = "---------"
-        self.status = State.RUNNING.value
+        self.status = 'RUNNING'
         self.game_id = str(uuid1()) #
         self.player = 'X'
         self.computer = 'O'
@@ -57,8 +52,17 @@ class Game:
         return {
             "game_id": self.game_id,
             "status": self.status,
-            "board": self.board
+            "board": self.board,
+            "player": self.player,
+            "computer": self.computer
         }
+
+    # def toOutputJSON(self):
+    #     return {
+    #         "game_id": self.game_id,
+    #         "status": self.status,
+    #         "board": self.board
+    #     }
     
     def toObject(self, gameJSON):
         game= Game()

@@ -1,6 +1,6 @@
 from Repository.GameRepository import GameRepository
 import random
-from Model.Game import Game,GridValue, State
+from Model.Game import Game,GridValue
 from Utils.utils import *
 class GameService:
 
@@ -35,7 +35,7 @@ class GameService:
         
         print("OldGameData", oldGameBoard)
         #TODO: set the player who is playing now
-        player = 'O'
+        player = unModifiedGame['player']
         # validate move
         print(modifiedGameBoard)
         if(not self.validateMove(modifiedGame,unModifiedGame,player)):
@@ -100,7 +100,11 @@ class GameService:
             game.set_player(player)
             game.set_computer(computer)
             print(f"game initialized with player as: {player} and computer as: {computer}")
-            self.gameRepository.add_game(game)            
+            #make computer's move
+            newBoard = self.makeMove(gameData, computer)
+            game.set_board(newBoard)
+            self.gameRepository.add_game(game)   
+
             return game
             
         elif (len(tup) == 0):
@@ -114,6 +118,7 @@ class GameService:
             print(game.__dict__)          
             newGameData=self.makeMove(gameData,computer)
             print(f"game initialized with player as: {player} and computer as: {computer}")
+            game.set_board(newGameData)
             self.gameRepository.add_game(game)
             return game
             
@@ -149,23 +154,22 @@ class GameService:
             return False
    
  
-    def makeMove(self,gameData, player):
+    def makeMove(self,board, player):
        
-        if not self.isBoardFilled(gameData):
-            # oneDGameData = gameData.flatten()
-            gameData = list(gameData)
-            print("One D Game Data", gameData)
+        if not self.isBoardFilled(board):
+            board = list(board)
+            print("One D Game Data", board)
             #unfilledIndices = np.where(gameData == GridValue.Unfilled.value)[0]
-            unfilledIndices = [idx for idx,ele in enumerate(gameData) if ele == GridValue.Unfilled.value]
+            unfilledIndices = [idx for idx,ele in enumerate(board) if ele == GridValue.Unfilled.value]
             print("Unfilled:", unfilledIndices)
             randomInt = random.choice(unfilledIndices)
             print("Grid position for new move", randomInt)
-            gameData[randomInt] = player
-            gameData = ''.join(map(str, gameData))
-            print("New Game Data\n",gameData)
-            return gameData
+            board[randomInt] = player
+            board = ''.join(map(str, board))
+            print("New Game Data\n",board)
+            return board
         else:
-            return gameData
+            return board
             
 
 
