@@ -1,24 +1,25 @@
 import json
 from flask import Flask
-from flask_restful import Resource,Api,reqparse,abort
+from flask_restful import Resource,Api,abort
+
+from Utils import *
 from Service.GameService import GameService
+from Utils.utils import getArgsParser
 app = Flask(__name__)
 api = Api(app)
 
 
 gameService = GameService()
 
-parser = reqparse.RequestParser()  # initialize
-parser.add_argument('game_id')  # add args
-parser.add_argument('board', required=True)
-parser.add_argument('status')
+#get parser from utils.py
+parser = getArgsParser()
 
-def find_game(game_id):
-    global GAMES
-    for game in GAMES:
-        if game['game_id'] == game_id:
-            return game
-    abort(404, message="Game {} doesn't exist".format(game_id))
+# def find_game(game_id):
+#     global GAMES
+#     for game in GAMES:
+#         if game['game_id'] == game_id:
+#             return game
+#     abort(404, message="Game {} doesn't exist".format(game_id))
 
 
 class GamesList(Resource):

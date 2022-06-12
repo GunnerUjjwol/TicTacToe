@@ -1,7 +1,7 @@
 from Repository.GameRepository import GameRepository
 import random
 from Model.Game import Game,GridValue
-from Utils.utils import *
+from Utils.utils import winningSets,togglePlayer
 class GameService:
 
     DRAW = "GAME DRAW"
@@ -188,17 +188,11 @@ class GameService:
 
 
     def isGameWon(self,board, player):
-        winningSets = [
-            # row Match Indices
-            {0,1,2}, {3,4,5}, {6,7,8},
-            #column Match Indices
-            {0,3,6}, {1,4,7}, {2,5,8},
-            #diaganoal Match indices
-            {0,4,8}, {2,4,6}
-        ]
+        #initialize to winningSets loaded from utils.py
+        winSets = winningSets
         print("Board",board)
         playersGrid = {idx for idx,ele in enumerate(board) if ele == player}
         
         print(playersGrid)
-        return any( winSet <= playersGrid for winSet in winningSets)
+        return any( winSet <= playersGrid for winSet in winSets)
 
