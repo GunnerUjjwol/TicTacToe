@@ -11,7 +11,6 @@ from Utils.utils import winningSets, toggle_player, GridValue, GameState
 
 
 class GameService:
-
     def __init__(self):
         # instantiate a game repository
         self.game_repository = GameRepository()
@@ -28,29 +27,31 @@ class GameService:
     def update_game(self, game_id, modifiedGame):
         """
         finds the game to be updated,
-        validates the move
+        calls the validate_move functions
         and updates the board if move is validated
 
         Args:
             game_id (string): the game id
             modifiedGame (Game): the updated game Object
 
-        Returns:
-            dict: returns updated game if update sucess otherwise returns None
+        Returns: tuple of game and message of update
+            Game: returns updated game if update sucess otherwise returns None
+            message: contains reason for invalidity if move could not be made
         """
         game = Game()
         unModifiedGame = self.game_repository.get_game(game_id)
 
         if unModifiedGame is None:
-            return None
+            return None, "Cannot get the game with specified game_id"
         modifiedGameBoard = modifiedGame.board
 
         # obtain the symbol the player is playing with, Naught or Cross
         player = unModifiedGame["player"]
 
         # validate move before updating
-        if not self.validate_move(modifiedGame, unModifiedGame, player):
-            return None
+        is_valid, message = self.validate_move(modifiedGame, unModifiedGame, player)
+        if not is_valid:
+            return None, message
         else:
 
             gameWon = self.is_game_won(modifiedGameBoard, player)
@@ -81,7 +82,7 @@ class GameService:
             self.game_repository.update_game(game_id, game)
 
             returned_game = self.game_repository.get_game(game_id)
-            return returned_game
+            return returned_game, "Game updated"
 
     def start_game(self, board):
         """
@@ -108,8 +109,7 @@ class GameService:
         game.set_board(board)
 
         # get the index and value of Board which are not Unfilled
-        tup = [(i, s) for i, s in enumerate(boardData)
-               if s != GridValue.Unfilled.value]
+        tup = [(i, s) for i, s in enumerate(boardData) if s != GridValue.Unfilled.value]
 
         if len(tup) == 1:
             # the case if player has sent board by making its move
@@ -134,8 +134,7 @@ class GameService:
             # computer will make the first move
 
             # select a random symbol, Naught or Cross
-            player = random.choice(
-                [GridValue.Cross.value, GridValue.Naught.value])
+            player = random.choice([GridValue.Cross.value, GridValue.Naught.value])
             computer = toggle_player(player)
             game.set_player(player)
             game.set_computer(computer)
@@ -163,7 +162,7 @@ class GameService:
             check if the board string has exactly 9 characters
             check if there was exactly one move made
             check if there was any overriding of filled Grid in the board
-            check if the newMove is made by the right symbol, 
+            check if the newMove is made by the right symbol,
                 if the player was playing with Naught, newMove should not be made with Cross
 
 
@@ -172,19 +171,26 @@ class GameService:
             oldGameData (dict): the original game Object
             player (char): the player's symbol, naught or cross
 
+        Returns:
+            (Validity, message) = returns True if valid and false , along with the message that may contain reason for invalidity
+
         """
 
         newBoard = newGameData["board"]
         oldBoard = oldGameData["board"]
+
         if oldGameData["status"] != GameState.RUNNING.value:
             # case to check if the game is in running state
+
+            invalidation_reason = "Game is not in running state"
             print("Game is not running")
-            return False
+            return False, invalidation_reason
 
         if len(list(newBoard)) != 9:
             # case to check if the board string has exactly 9 characters
+            invalidation_reason = "Grid Value length not equal to 9"
             print("Invalid Board Data")
-            return False
+            return False, invalidation_reason
 
         # Save the board data in set of tuples of the index and value of Filled Grid in board
         # Used this datastructure for conveniene to check for consecutive move
@@ -196,11 +202,16 @@ class GameService:
             # also ensures there is no overriding of the earlier move
             newMove = newState - oldState
 
-            # ensures there was just one move made
-            # also ensures the newMove is made by the rightful symbol
-            return len(newMove) == 1 and list(newMove)[0][1] == player
+            if len(newMove) != 1:
+                # ensures there was just one move made
+                return False, "More than one move made"
+            if list(newMove)[0][1] != player:
+                # ensures the newMove is made by the rightful symbol
+                return False, "Player made the move with wrong symbol"
+            else:
+                return True, "Move validated"
         else:
-            return False
+            return False, "New Board data does not comply with old Board data"
 
     def make_move(self, board, computer):
         """

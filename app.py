@@ -73,14 +73,14 @@ class Games(Resource):
             game_id (string): The GameId
         """
         args = parser.parse_args()
-        game = game_service.update_game(game_id, args)
+        game, message = game_service.update_game(game_id, args)
         if game is not None:
             return {
                 "message": "Move successfully registered",
                 "data": to_object(game),
             }, 200
         else:
-            return {"message": "Invalid Move"}, 400
+            return {"message": f"Move not registered : {message}"}, 400
 
     def delete(self, game_id):
         """Delete the Game
