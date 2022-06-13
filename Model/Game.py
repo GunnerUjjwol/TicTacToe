@@ -3,6 +3,7 @@ Model for Game Object
 """
 
 from uuid import uuid1
+from Utils.utils import GameState
 
 
 class Game:
@@ -11,7 +12,7 @@ class Game:
         Intialize the game
         """
         self.board = "---------"
-        self.status = "RUNNING"
+        self.status = GameState.RUNNING.value
         self.game_id = str(uuid1())  # Gets a unique identifier
         self.player = "X"
         self.computer = "O"

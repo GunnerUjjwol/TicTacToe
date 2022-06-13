@@ -7,7 +7,7 @@ import random
 
 from Model.Game import Game
 from Repository.GameRepository import GameRepository
-from Utils.utils import winningSets, toggle_player, GridValue
+from Utils.utils import winningSets, toggle_player, GridValue, GameState
 
 
 class GameService:
@@ -73,8 +73,9 @@ class GameService:
             if gameWon:
                 game.set_status(f"{player}_WON")
             else:
+                # the game is drawn if the board is full and nobody won
                 if self.is_board_filled(modifiedGameBoard):
-                    game.set_status("DRAW")
+                    game.set_status(GameState.DRAW.value)
 
             # finally update the gameBoard
             self.game_repository.update_game(game_id, game)
@@ -175,7 +176,7 @@ class GameService:
 
         newBoard = newGameData["board"]
         oldBoard = oldGameData["board"]
-        if oldGameData["status"] != "RUNNING":
+        if oldGameData["status"] != GameState.RUNNING.value:
             # case to check if the game is in running state
             print("Game is not running")
             return False

@@ -4,7 +4,7 @@ that holds the games dictionary
 and database CRUD functions
 """
 
-from Utils.utils import to_object
+from Utils.utils import GameState,GridValue
 
 
 class GameRepository:
@@ -14,23 +14,23 @@ class GameRepository:
             "1": {
                 "game_id": "1",
                 "board": "X--------",
-                "status": "RUNNING",
-                "player": "O",
-                "computer": "X",
+                "status": GameState.RUNNING.value,
+                "player": GridValue.Naught.value,
+                "computer": GridValue.Cross.value,
             },
             "2": {
                 "game_id": "2",
                 "board": "O--O---XX",
-                "status": "RUNNING",
-                "player": "O",
-                "computer": "X",
+                "status": GameState.RUNNING.value,
+                "player": GridValue.Naught.value,
+                "computer": GridValue.Cross.value,
             },
             "3": {
                 "game_id": "3",
                 "board": "X-----O--",
-                "status": "RUNNING",
-                "player": "X",
-                "computer": "O",
+                "status":GameState.RUNNING.value,
+                "player": GridValue.Cross.value,
+                "computer": GridValue.Naught.value,
             },
         }
 

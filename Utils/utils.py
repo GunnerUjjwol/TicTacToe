@@ -7,11 +7,20 @@ from enum import Enum
 
 class GridValue(Enum):
     """
-    Class to hold Grid Value types
+    Grid Value types Enum
     """
     Unfilled = "-"
     Cross = "X"
     Naught = "O"
+
+class GameState(Enum):
+    """
+    Game State Enum 
+    """
+    RUNNING = "RUNNING"
+    X_WON = "X_WON"
+    O_WON = "O_WON"
+    DRAW = "DRAW"
 
 
 """
