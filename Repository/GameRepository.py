@@ -55,7 +55,6 @@ class GameRepository:
     def update_game(self, game_id, game):
         if game_id in self.games.keys():
             self.games[game_id] = game.to_json()
-            print(self.games)
             return True
         else:
             return False
