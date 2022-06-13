@@ -15,13 +15,11 @@ class GridValue(Enum):
 
 
 """
+The List of sets that contains the indices
+which would signify the winning condition
+if all specified indices in the list has same GridValue
 """
 winningSets = [
-    """
-    The List of sets that contains the indices
-    which would signify the winning condition
-    if all indices in the list has same GridValue
-    """
     # row Match Indices
     {0, 1, 2},
     {3, 4, 5},

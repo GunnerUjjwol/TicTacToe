@@ -13,9 +13,8 @@ from Utils.utils import winningSets, toggle_player, GridValue
 class GameService:
 
     def __init__(self):
+        # instantiate a game repository
         self.game_repository = GameRepository()
-        self.nRows = 3
-        self.nCols = 3
 
     def get_games(self):
         return self.game_repository.get_games()
@@ -27,37 +26,47 @@ class GameService:
         return self.game_repository.delete_game(game_id)
 
     def update_game(self, game_id, modifiedGame):
+        """
+        finds the game to be updated,
+        validates the move
+        and updates the board if move is validated
+
+        Args:
+            game_id (string): the game id
+            modifiedGame (Game): the updated game Object
+
+        Returns:
+            dict: returns updated game if update sucess otherwise returns None
+        """
         game = Game()
         unModifiedGame = self.game_repository.get_game(game_id)
 
         if unModifiedGame is None:
-            return False
-        print("Found Game", unModifiedGame)
-        oldGameBoard = unModifiedGame["board"]
+            return None
         modifiedGameBoard = modifiedGame.board
 
-        print("OldGameData", oldGameBoard)
         # obtain the symbol the player is playing with, Naught or Cross
         player = unModifiedGame["player"]
-        # validate move
-        print(modifiedGameBoard)
+
+        # validate move before updating
         if not self.validate_move(modifiedGame, unModifiedGame, player):
             return None
         else:
 
             gameWon = self.is_game_won(modifiedGameBoard, player)
-            print("Game Won", gameWon)
+            print("Game Won:", gameWon)
 
-            # now make our own computer's move if the board is already not full, otherwise return status
+            # now make our own computer's move if the board is already not full
             if not self.is_board_filled(modifiedGameBoard):
-                # TODO: might need to remove toggling computer
+                # set the computer's symbol to opposite of the player
                 player = toggle_player(player)
+
+                # make the move
                 modifiedGameBoard = self.make_move(modifiedGameBoard, player)
 
                 # check again, if the game is won after computer makes the move
                 gameWon = self.is_game_won(modifiedGameBoard, player)
-                print("Game Won", gameWon)
-                print(modifiedGameBoard)
+                print("Game Won: ", gameWon)
 
             game.set_game_id(game_id)
             game.set_board(modifiedGameBoard)
@@ -66,25 +75,43 @@ class GameService:
             else:
                 if self.is_board_filled(modifiedGameBoard):
                     game.set_status("DRAW")
+
+            # finally update the gameBoard
             self.game_repository.update_game(game_id, game)
 
             returned_game = self.game_repository.get_game(game_id)
             return returned_game.to_json()
 
-    # initialize game Data after first post request to start a game
-    # This is called upon post request to start the game
     def start_game(self, board):
+        """
+        initialize game Data to start a game,
+        after validating the sent board data
+        and after checking if player has sent the board with its own move
+
+        Args:
+            board (string): the board data
+
+        Returns:
+            Game: returns if game could be started otherwise returns None
+        """
+
+        # initialize a game Object
         game = Game()
 
         boardData = list(board)
+
         # validate board
         if len(boardData) != 9:
             print("Invalid Board Data")
-            return False
+            return None
         game.set_board(board)
-        tup = [(i, s) for i, s in enumerate(boardData) if s != "-"]
-        print(tup)
+
+        # get the index and value of Board which are not Unfilled
+        tup = [(i, s) for i, s in enumerate(boardData)
+               if s != GridValue.Unfilled.value]
+
         if len(tup) == 1:
+            # the case if player has sent board by making its move
             player = tup[0][1]
             computer = toggle_player(player)
             game.set_player(player)
@@ -95,25 +122,31 @@ class GameService:
             # make computer's move
             newBoard = self.make_move(boardData, computer)
             game.set_board(newBoard)
+
+            # add the game to database
             self.game_repository.add_game(game)
 
             return game.to_json()
 
         elif len(tup) == 0:
-            print("Game started with no initial move: ---------")
-            print("Computer will make the first move")
+            # the case if game is started with no initial move
+            # computer will make the first move
 
+            # select a random symbol, Naught or Cross
             player = random.choice(
                 [GridValue.Cross.value, GridValue.Naught.value])
             computer = toggle_player(player)
             game.set_player(player)
             game.set_computer(computer)
-            print(game.__dict__)
+
+            # make computer's move
             newGameData = self.make_move(boardData, computer)
             print(
                 f"game initialized with player as: {player} and computer as: {computer}"
             )
             game.set_board(newGameData)
+
+            # add the game to database
             self.game_repository.add_game(game)
             return game.to_json()
 
@@ -121,63 +154,118 @@ class GameService:
             print("Invalid Game Initialization")
             return None
 
-    # define validation function
     def validate_move(self, newGameData, oldGameData, player):
-        print(newGameData)
-        print(oldGameData)
+        """
+        function that checks if the Board data sent by user is valid
+        Validation list:
+            check if the game is in running state or completed state
+            check if the board string has exactly 9 characters
+            check if there was exactly one move made
+            check if there was any overriding of filled Grid in the board
+            check if the newMove is made by the right symbol, 
+                if the player was playing with Naught, newMove should not be made with Cross
+
+
+        Args:
+            newGameData (dict): the modified Game Object
+            oldGameData (dict): the original game Object
+            player (char): the player's symbol, naught or cross
+
+        """
+
         newBoard = newGameData["board"]
         oldBoard = oldGameData["board"]
         if oldGameData["status"] != "RUNNING":
-            print("Game Already Complete")
+            # case to check if the game is in running state
+            print("Game is not running")
             return False
+
         if len(list(newBoard)) != 9:
+            # case to check if the board string has exactly 9 characters
             print("Invalid Board Data")
             return False
+
+        # Save the board data in set of tuples of the index and value of Filled Grid in board
+        # Used this datastructure for conveniene to check for consecutive move
         newState = {(i, s) for i, s in enumerate(newBoard) if s in "XO"}
         oldState = {(i, s) for i, s in enumerate(oldBoard) if s in "XO"}
-        print("oldState", oldState)
-        print("newState", newState)
+
         if oldState <= newState:
+            # check if the old board and new board differs only by one addition of a move
+            # also ensures there is no overriding of the earlier move
             newMove = newState - oldState
-            print("newMove", newMove)
+
+            # ensures there was just one move made
+            # also ensures the newMove is made by the rightful symbol
             return len(newMove) == 1 and list(newMove)[0][1] == player
         else:
             return False
 
-    def make_move(self, board, player):
+    def make_move(self, board, computer):
+        """
+        Make Computer's move on one of the random unfilled grid of the board
+
+        Args:
+            board (string): the board
+            computer (char): the player's symbol
+        Returns:
+            board (string): the new board data
+        """
 
         if not self.is_board_filled(board):
+            # check if the board is already full before making computer's move
             board = list(board)
-            print("One D Game Data", board)
+
+            # the indices of grids which are unfilled
             unfilledIndices = [
                 idx for idx, ele in enumerate(board) if ele == GridValue.Unfilled.value
             ]
-            print("Unfilled:", unfilledIndices)
+
+            # choose a random position for the move from the list of unfilled indices
             randomInt = random.choice(unfilledIndices)
-            print("Grid position for new move", randomInt)
-            board[randomInt] = player
+
+            board[randomInt] = computer
+
+            # convert the board back to string from list
             board = "".join(map(str, board))
-            print("New Game Data\n", board)
+
             return board
         else:
+            # if board is full, return the same board
             return board
 
     def is_board_filled(self, board):
-        print("GridValue", GridValue.Unfilled.value)
+        """
+        check if the board is completely full and does not have any unfilled grids
+
+        Args:
+            board (string): the board
+
+        Returns:
+            boolean: True is board is full, False otherwise
+        """
 
         board = list(board)
-        print(board)
-        print(set(board))
+
+        # check if there are any Unfilled grid in the board
         isFull = GridValue.Unfilled.value not in set(board)
 
-        print("isFull", isFull)
         return isFull
 
     def is_game_won(self, board, player):
-        # initialize to winningSets loaded from utils.py
+        """
+        Check if the game is won
+
+        Args:
+            board (string): the board
+            player (char): the player's symbol
+
+        Returns:
+            boolean: True if the game is won, False otherwise
+        """
+        # initialize to list of winningSets, which are the success cases
+        # loaded from utils.py
         winSets = winningSets
-        print("Board", board)
         playersGrid = {idx for idx, ele in enumerate(board) if ele == player}
 
-        print(playersGrid)
         return any(winSet <= playersGrid for winSet in winSets)
