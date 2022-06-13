@@ -19,6 +19,7 @@ python app.py
 
 The backend is structured in Model, Service and Repository Model
 
+```
 |   app.py                      #the entrypoint of the APIs    
 |   requirements.txt            #the list of dependencies to be installed
 |   
@@ -33,3 +34,4 @@ The backend is structured in Model, Service and Repository Model
 |           
 \---Utils
     |   utils.py                #Utility Functions and variables
+```
