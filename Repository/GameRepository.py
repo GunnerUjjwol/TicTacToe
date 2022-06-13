@@ -1,3 +1,6 @@
+from Utils.utils import to_object
+
+
 class GameRepository:
     def __init__(self):
         """dictionary which holds the state of all games"""
@@ -34,7 +37,7 @@ class GameRepository:
         return None
 
     def add_game(self, game):
-        self.games[game.game_id] = game.toJSON()
+        self.games[game.game_id] = game.to_json()
 
     def delete_game(self, game_id):
         if game_id in self.games.keys():
@@ -45,7 +48,7 @@ class GameRepository:
 
     def update_game(self, game_id, game):
         if game_id in self.games.keys():
-            self.games[game_id] = game.toJSON()
+            self.games[game_id] = game.to_json()
             print(self.games)
             return True
         else:
