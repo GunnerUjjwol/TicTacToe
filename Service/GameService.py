@@ -81,7 +81,7 @@ class GameService:
             self.game_repository.update_game(game_id, game)
 
             returned_game = self.game_repository.get_game(game_id)
-            return returned_game.to_json()
+            return returned_game
 
     def start_game(self, board):
         """
