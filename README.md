@@ -3,7 +3,21 @@ TicTacToe
 
 > TicTacToe game flask backend app with python
 
-### Code Structure
+#### How to Run
+
+Install all the dependencies in requirements.txt
+```
+pip install -r requirements.txt
+```
+
+Run the app.py script
+````
+python app.py
+```
+
+#### Code Structure
+
+The backend is structured in Model, Service and Repository Model
 
 |   app.py                      #the entrypoint of the APIs    
 |   requirements.txt            #the list of dependencies to be installed
