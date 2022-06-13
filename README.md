@@ -35,3 +35,8 @@ The backend is structured in Model, Service and Repository Model
 \---Utils
     |   utils.py                #Utility Functions and variables
 ```
+#####About the Game
+The description of the game can be found at tictactoe.txt
+
+#####About the API documentation
+The API endpoint documentations can be found at tictactoe.yaml
