@@ -1,30 +1,30 @@
 class GameRepository:
     def __init__(self):
-        '''dictionary which holds the state of all games'''
+        """dictionary which holds the state of all games"""
         self.games = {
             "1": {
                 "game_id": "1",
                 "board": "X--------",
                 "status": "RUNNING",
                 "player": "O",
-                "computer": "X"
+                "computer": "X",
             },
-            "2" : {
+            "2": {
                 "game_id": "2",
                 "board": "O--O---XX",
                 "status": "RUNNING",
                 "player": "O",
-                "computer": "X"
+                "computer": "X",
             },
             "3": {
                 "game_id": "3",
                 "board": "X-----O--",
                 "status": "RUNNING",
                 "player": "X",
-                "computer": "O"
-            }
+                "computer": "O",
+            },
         }
-    
+
     def get_games(self):
         return self.games
 
@@ -32,7 +32,7 @@ class GameRepository:
         if game_id in self.games.keys():
             return self.games[game_id]
         return None
-        
+
     def add_game(self, game):
         self.games[game.game_id] = game.toJSON()
 
@@ -40,7 +40,7 @@ class GameRepository:
         if game_id in self.games.keys():
             del self.games[game_id]
             return True
-        else: 
+        else:
             return False
 
     def update_game(self, game_id, game):
@@ -50,4 +50,3 @@ class GameRepository:
             return True
         else:
             return False
-        

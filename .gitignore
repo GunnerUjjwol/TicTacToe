@@ -1,0 +1,4 @@
+.vscode/
+virt/
+__pycache__/
+*.pyc

@@ -1,21 +1,21 @@
 from enum import Enum
 from uuid import uuid1
 
-#class for enum to identify unfilled value, cross and naught values
+# class for enum to identify unfilled value, cross and naught values
 class GridValue(Enum):
-    Unfilled = '-'
-    Cross = 'X'
-    Naught = 'O'
+    Unfilled = "-"
+    Cross = "X"
+    Naught = "O"
 
 
 class Game:
     def __init__(self):
         self.board = "---------"
-        self.status = 'RUNNING'
-        self.game_id = str(uuid1()) #
-        self.player = 'X'
-        self.computer = 'O'
-    
+        self.status = "RUNNING"
+        self.game_id = str(uuid1())  #
+        self.player = "X"
+        self.computer = "O"
+
     def get_board(self):
         return self.board
 
@@ -23,7 +23,7 @@ class Game:
         # have validation here
 
         self.board = board
-    
+
     def get_status(self):
         return self.status
 
@@ -38,23 +38,23 @@ class Game:
 
     def get_player(self):
         return self.player
-    
+
     def set_player(self, player):
         self.player = player
 
     def get_computer(self):
         return self.computer
-    
+
     def set_computer(self, computer):
         self.computer = computer
-    
+
     def toJSON(self):
         return {
             "game_id": self.game_id,
             "status": self.status,
             "board": self.board,
             "player": self.player,
-            "computer": self.computer
+            "computer": self.computer,
         }
 
     # def toOutputJSON(self):
@@ -63,12 +63,12 @@ class Game:
     #         "status": self.status,
     #         "board": self.board
     #     }
-    
+
     def toObject(self, gameJSON):
-        game= Game()
-        game.set_game_id = gameJSON['game_id']
-        game.set_board= gameJSON['board']
-        game.set_status= gameJSON['status']
-        game.set_player= gameJSON['player']
-        game.set_computer= gameJSON['computer']
+        game = Game()
+        game.set_game_id = gameJSON["game_id"]
+        game.set_board = gameJSON["board"]
+        game.set_status = gameJSON["status"]
+        game.set_player = gameJSON["player"]
+        game.set_computer = gameJSON["computer"]
         return game

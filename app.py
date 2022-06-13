@@ -14,13 +14,6 @@ gameService = GameService()
 #get parser from utils.py
 parser = getArgsParser()
 
-# def find_game(game_id):
-#     global GAMES
-#     for game in GAMES:
-#         if game['game_id'] == game_id:
-#             return game
-#     abort(404, message="Game {} doesn't exist".format(game_id))
-
 
 class GamesList(Resource):
 
@@ -47,11 +40,11 @@ class Games(Resource):
             return "Resource not found", 404
 
     #newMove
-    #TODO: this is the API with most logic, integrate the logics here
     def put(self, game_id):
         args = parser.parse_args()
         gameService.update_game(game_id,args)  
         return 
+
     # delete Game
     def delete(self, game_id):
         game = gameService.get_game(game_id)
