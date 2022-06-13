@@ -1,13 +1,16 @@
+"""
+This file contains the actual logics 
+and functions to fulfill the use cases
+"""
+
 import random
 
+from Model.Game import Game
 from Repository.GameRepository import GameRepository
-from Model.Game import Game, GridValue
-from Utils.utils import winningSets, toggle_player
+from Utils.utils import winningSets, toggle_player, GridValue
 
 
 class GameService:
-
-    DRAW = "GAME DRAW"
 
     def __init__(self):
         self.game_repository = GameRepository()
@@ -100,7 +103,8 @@ class GameService:
             print("Game started with no initial move: ---------")
             print("Computer will make the first move")
 
-            player = random.choice([GridValue.Cross.value, GridValue.Naught.value])
+            player = random.choice(
+                [GridValue.Cross.value, GridValue.Naught.value])
             computer = toggle_player(player)
             game.set_player(player)
             game.set_computer(computer)

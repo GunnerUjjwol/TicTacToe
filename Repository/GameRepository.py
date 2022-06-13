@@ -1,3 +1,9 @@
+"""
+This file is the repository/database
+that holds the games dictionary
+and database CRUD functions
+"""
+
 from Utils.utils import to_object
 
 

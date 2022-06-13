@@ -1,19 +1,18 @@
-from enum import Enum
+"""
+Model for Game Object
+"""
+
 from uuid import uuid1
-
-# class for enum to identify unfilled value, cross and naught values
-class GridValue(Enum):
-    Unfilled = "-"
-    Cross = "X"
-    Naught = "O"
-
 
 
 class Game:
     def __init__(self):
+        """
+        Intialize the game
+        """
         self.board = "---------"
         self.status = "RUNNING"
-        self.game_id = str(uuid1())  
+        self.game_id = str(uuid1())  # Gets a unique identifier
         self.player = "X"
         self.computer = "O"
 
@@ -21,8 +20,6 @@ class Game:
         return self.board
 
     def set_board(self, board):
-        # have validation here
-
         self.board = board
 
     def get_status(self):
@@ -50,6 +47,12 @@ class Game:
         self.computer = computer
 
     def to_json(self):
+        """
+        Utility function to convert Game Object to Json
+
+        Returns:
+            json: the json representation of game
+        """
         return {
             "game_id": self.game_id,
             "status": self.status,
@@ -57,12 +60,3 @@ class Game:
             "player": self.player,
             "computer": self.computer,
         }
-
-    # def toOutputJSON(self):
-    #     return {
-    #         "game_id": self.game_id,
-    #         "status": self.status,
-    #         "board": self.board
-    #     }
-
-

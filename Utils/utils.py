@@ -1,7 +1,27 @@
+"""
+Utility functions and variables
+"""
 from flask_restful import reqparse
+from enum import Enum
 
 
+class GridValue(Enum):
+    """
+    Class to hold Grid Value types
+    """
+    Unfilled = "-"
+    Cross = "X"
+    Naught = "O"
+
+
+"""
+"""
 winningSets = [
+    """
+    The List of sets that contains the indices
+    which would signify the winning condition
+    if all indices in the list has same GridValue
+    """
     # row Match Indices
     {0, 1, 2},
     {3, 4, 5},
@@ -16,12 +36,28 @@ winningSets = [
 ]
 
 # utility function to toggle player
+
+
 def toggle_player(player):
-    player = "O" if player == "X" else "X"
+    """
+    change player from naught to cross and viceversa
+
+    Args:
+        player (char): the player denotion
+
+    Returns:
+        _type_: _description_
+    """
+    player = GridValue.Cross.value if player == GridValue.Naught.value else GridValue.Naught.value
     return player
 
 
 def get_args_parser():
+    """
+    add arguments to the requestparser
+    to parse request body
+    returns the requestparser
+    """
     parser = reqparse.RequestParser()  # initialize
     parser.add_argument("game_id")  # add args
     parser.add_argument("board", required=True)
@@ -30,6 +66,15 @@ def get_args_parser():
 
 
 def to_object(gameJSON):
+    """
+    retains only the desirable keys and returns it as a new Object
+
+    Args:
+        gameJSON (json): the Json Object
+
+    Returns:
+        dict: the desired format dict
+    """
     game_dict = {}
     game_dict["game_id"] = gameJSON.get("game_id")
     game_dict["board"] = gameJSON.get("board")
