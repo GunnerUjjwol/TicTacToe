@@ -198,8 +198,8 @@ class GameService:
         oldState = {(i, s) for i, s in enumerate(oldBoard) if s in "XO"}
 
         if oldState <= newState:
-            # check if the old board and new board differs only by one addition of a move
-            # also ensures there is no overriding of the earlier move
+            # the oldState set should be a subset of the newState set
+
             newMove = newState - oldState
 
             if len(newMove) != 1:

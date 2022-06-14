@@ -44,7 +44,10 @@ class GamesList(Resource):
         args = parser.parse_args()
         game = game_service.start_game(args["board"])
         if game is not None:
-            return {"message": "Success", "data": to_object(game)}, 200
+            return {
+                "message": "Game successfully started",
+                "data": to_object(game),
+            }, 200
         else:
             return {"message": "Bad Request"}, 400
 
@@ -101,8 +104,8 @@ class Games(Resource):
                 return {"message": "Bad Request"}, 400
 
 
-api.add_resource(GamesList, "/games")
-api.add_resource(Games, "/games/<game_id>")
+api.add_resource(GamesList, "/api/v1/games")
+api.add_resource(Games, "/api/v1/games/<game_id>")
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=105)
+    app.run(host="0.0.0.0", port=5000)
